@@ -1,3 +1,10 @@
+const {
+    readFile,
+    writeFile,
+    appendFile,
+    rm
+} = require('fs')
+
 class ProductManager{
     constructor(){
         this.products = [];
@@ -13,7 +20,6 @@ class ProductManager{
             code,
             stock
         }
-        console.log(id)
         const long = id - 1
         if(long => 1){
             for(const p of this.products){
@@ -23,6 +29,8 @@ class ProductManager{
             }
         }
         product.id = id
+        console.log(product.toString())
+        writeFile('/home/emanuel/Documents/Entrega-NodeJS-Coder/archivo_db.txt',product.toString())
         this.products.push(product)
         console.log('Producto agregado')
     }
@@ -45,4 +53,4 @@ let create1 = new ProductManager()
 create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 create1.getProducts()
-create1.getProductById(2)
+//create1.getProductById(2)
