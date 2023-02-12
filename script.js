@@ -1,15 +1,25 @@
 const {
-    promises:{
-        readFile, 
-        writeFile, 
+    readFileSync,
+    promises:{ 
         appendFile, 
-        rm,
     }
 } = require('fs')
 
 class ProductManager{
     constructor(){
         this.products = [];
+    }
+
+    readProducts(){
+        this.products = []
+        let temp_products = readFileSync('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt','utf-8')
+        console.log(temp_products)
+        const arr_products = temp_products.split(' ')
+        for(let product of arr_products){
+            if(product =! ""){
+                this.products.push(product)
+            }
+        }
     }
 
     async addProducts(title, description, price, thumbnail, code, stock){
@@ -31,11 +41,9 @@ class ProductManager{
             }
         }
         product.id = id
-        console.log(product.toString())
-        writeFile('/home/emanuel/Documents/Entrega-NodeJS-Coder/archivo_db.txt',product.toString())
         this.products.push(product)
         const lastProduct = product
-        await writeFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt',`{${lastProduct.title},${lastProduct.description},${lastProduct.price},${lastProduct.code},${lastProduct.code},${lastProduct.id}},`)
+        await appendFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt',`{${lastProduct.title},${lastProduct.description},${lastProduct.price},${lastProduct.code},${lastProduct.code},${lastProduct.id}} `)
         console.log('Producto agregado')
     }
 
@@ -55,7 +63,7 @@ class ProductManager{
 }
 
 let create1 = new ProductManager()
-
+create1.readProducts()
 create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.getProducts()
