@@ -1,7 +1,10 @@
 const {
     readFileSync,
+    rmSync,
+    appendFileSync,
     promises:{ 
-        appendFile, 
+        appendFile,
+        writeFile
     }
 } = require('fs')
 
@@ -10,13 +13,20 @@ class ProductManager{
         this.products = [];
     }
 
+    writeProducts(){
+        for(let product of this.products){
+            if(product){
+                appendFileSync('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt',`{${product.title},${product.description},${product.price},${product.thumbnail},${product.code},${product.id}} `)
+            }
+        }
+    }
+
     readProducts(){
         this.products = []
         let temp_products = readFileSync('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt','utf-8')
-        console.log(temp_products)
         const arr_products = temp_products.split(' ')
         for(let product of arr_products){
-            if(product =! ""){
+            if(product){
                 this.products.push(product)
             }
         }
@@ -43,7 +53,7 @@ class ProductManager{
         product.id = id
         this.products.push(product)
         const lastProduct = product
-        await appendFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt',`{${lastProduct.title},${lastProduct.description},${lastProduct.price},${lastProduct.code},${lastProduct.code},${lastProduct.id}} `)
+        await appendFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt',`{${lastProduct.title},${lastProduct.description},${lastProduct.price},${lastProduct.thumbnail},${lastProduct.code},${lastProduct.id}} `)
         console.log('Producto agregado')
     }
 
@@ -51,20 +61,41 @@ class ProductManager{
         console.log(this.products)
     }
 
-    getProductById(id){
+    modifyProduct(id,newInfo){
         if(id <= 0){
             throw new Error('No existe el ID: ',id)
         }else if(this.products[id-1] === undefined){
             throw new Error('Producto no existe, intente con otro')
         }else{
-            console.log(this.products[id])
+            this.products[id].id = newInfo.id
+            this.products[id].title = newInfo.title
+            this.products[id].description = newInfo.description
+            this.products[id].price = newInfo.price
+            this.products[id].thumbnail = newInfo.thumbnail
+            this.products[id].code = newInfo.code
+            rmSync('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt')
+            writeFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt','')
+            this.writeProducts()
+        }
+    }
+
+    deleteInfo(id){
+        if(id <= 0){
+            throw new Error('No existe el ID: ',id)
+        }else if(this.products[id-1] === undefined){
+            throw new Error('Producto no existe, intente con otro')
+        }else{
+            this.products.pop(id-1)
+            rmSync('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt')
+            writeFile('C:/Users/emanu/Documents/Entrega-NodeJS-Coder/productos_db.txt','')
+            this.writeProducts()
         }
     }
 }
 
 let create1 = new ProductManager()
 create1.readProducts()
-create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
+//create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.getProducts()
-//create1.getProductById(2)
+create1.getProductById(1)
