@@ -57,17 +57,19 @@ class ProductManager{
         console.log('Producto agregado')
     }
 
-    getProducts(){
-        return this.products
+    async getProducts(){
+        const allProducts = await this.products
+        return allProducts.toString()
     }
 
-    getProductById(id){
+    async getProductById(id){
         if(id <= 0){
              return `No existe el producto con ID: ${id}`
         }else if(this.products[id-1] === undefined){
             return 'Producto no existe, intente con otro'
         }else{
-            return this.products[id-1].toString()
+            const foundProduct = await this.products[id-1].toString()
+            return foundProduct
         }
     }
 
@@ -112,7 +114,7 @@ let create1 = new ProductManager()
 create1.readProducts()
 
 function getAllProducts(req,res){
-    res.send(create1.getProducts().toString()) 
+    res.send(create1.getProducts()) 
 }
 
 function getProductById(req,res){
