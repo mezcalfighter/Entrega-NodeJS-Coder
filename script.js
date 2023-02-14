@@ -58,7 +58,17 @@ class ProductManager{
     }
 
     getProducts(){
-        console.log(this.products)
+        return this.products
+    }
+
+    getProductById(id){
+        if(id <= 0){
+             return `No existe el producto con ID: ${id}`
+        }else if(this.products[id-1] === undefined){
+            return 'Producto no existe, intente con otro'
+        }else{
+            return this.products[id-1].toString()
+        }
     }
 
     modifyProduct(id,newInfo){
@@ -93,9 +103,28 @@ class ProductManager{
     }
 }
 
+const express = require('express');
+const app = express()
+const puerto = 8080
+app.listen(puerto, () => {console.log('Conectado!')})
+
 let create1 = new ProductManager()
 create1.readProducts()
+
+function getAllProducts(req,res){
+    res.send(create1.getProducts().toString()) 
+}
+
+function getProductById(req,res){
+    if(!req.params.id){
+        res.send(create1.getProductById(req.query.id))
+    }else{
+        res.send(create1.getProductById(req.params.id))
+    }
+}
+
+app.get('/allProducts',getAllProducts)
+app.get('/productById/:id',getProductById)
 //create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.addProducts(title='Producto 1', description='Test',price=200,thumbnail='No imagen',code='abc222',stock=25)
 //create1.getProducts()
-create1.getProductById(1)
